@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 
 function anchorize(string) {
   return '#' + string.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
@@ -54,50 +55,57 @@ function generateTOC(headers) {
   var toc = headers.map(parseHeader);
   return toc.join('\n');
 }
-module.exports = function (mdpath) {
-  function parseMd (md) {
-    var toc = {};
-    toc.headers = [];
+function parseMd (md) {
+  var headers = [];
 
-    var line, lines = md.split('\n');
-    var arr, header, title, indent = 0;
-    var stack = [];
+  var line, lines = md.split('\n');
+  var arr, header, title, indent = 0;
+  var stack = [];
 
-    line = lines.shift();
-    while (lines.length > 0) {
-      header = getHeader(line);
-      if (header) {
-        if (header.indent === 1) {
-          toc.headers.push(header);
-          stack = collapse(stack, 0);
-          //stack = [];
-          indent = 0;
-        }
-
-
-        if (header.indent <= indent) {
-          stack = collapse(stack, header.indent - 1);
-        }
-        stack.push(header);
-        indent = header.indent;
-
+  line = lines.shift();
+  while (lines.length > 0) {
+    header = getHeader(line);
+    if (header) {
+      if (header.indent === 1) {
+        headers.push(header);
+        stack = collapse(stack, 0);
+        indent = 0;
       }
-      line = lines.shift();
-    }
-    collapse(stack, 1);
-    toc.toc = generateTOC(toc.headers);
-    return toc;
-  }
 
-  var file = fs.readFileSync(mdpath, 'utf8', function (err, data) {
+
+      if (header.indent <= indent) {
+        stack = collapse(stack, header.indent - 1);
+      }
+      stack.push(header);
+      indent = header.indent;
+
+    }
+    line = lines.shift();
+  }
+  collapse(stack, 1);
+  return headers;
+}
+
+module.exports = function (md) {
+  var headers = parseMd(md);
+  return generateTOC(headers);
+}
+module.exports.open = function (mdpath, headers) {
+
+  var file = fs.readFileSync(path.join(__dirname, mdpath), 'utf8', function (err, data) {
     if (err) {
       throw err;
     }
     return data;
   });
 
-  return parseMd(file);
+  var h = parseMd(file);
+
+  return headers == undefined ? h : generateTOC(h);
+  //return parseMd(file);
+  //return generateTOC(headers);
 };
 
+module.exports.headers = parseMd;
 module.exports.collapse = collapse;
 module.exports.getHeader = getHeader;

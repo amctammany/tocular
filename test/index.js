@@ -2,11 +2,13 @@ var expect = require('chai').expect;
 var tocular = require('../index.js');
 
 var path = require('path');
+var fs = require('fs');
 
-
-var simple = path.join(__dirname, './fixtures/simple.md');
-var complex = path.join(__dirname, './fixtures/complex.md');
-var supercomplex = path.join(__dirname, './fixtures/super-complex.md');
+var simple = './test/fixtures/simple.md';
+var complex = './test/fixtures/complex.md';
+var supercomplex = './test/fixtures/super-complex.md';
+//var complex = tocular.open('./test/fixtures/complex.md');
+//var supercomplex = tocular.open('./test/fixtures/super-complex.md');
 
 describe('tocular', function () {
   it('should be true', function () {
@@ -15,7 +17,7 @@ describe('tocular', function () {
   });
 
   it('should load markdown text', function () {
-    tocular(simple);
+    tocular('./fixtures/simple.md');
   });
   it('should get header from line', function () {
     var line = '# Introduction to Chemistry!';
@@ -66,7 +68,7 @@ describe('tocular', function () {
   });
 
   it('should find simple headers', function () {
-    var headers = tocular(simple).headers;
+    var headers = tocular.open(simple);
     expect(headers.length).to.equal(3);
     expect(headers[0].title).to.equal('Introduction');
     expect(headers[0].anchor).to.equal('#introduction');
@@ -77,19 +79,19 @@ describe('tocular', function () {
     expect(headers[1].title).to.equal('Second Paragraph');
     expect(headers[1].anchor).to.equal('#secondparagraph');
     expect(headers[1].children.length).to.equal(1);
+    expect(headers[1].children.length).to.equal(1);
     expect(headers[2].title).to.equal('The Finale?');
     expect(headers[2].anchor).to.equal('#thefinale');
     expect(headers[2].children.length).to.equal(0);
   });
 
   it('should create simple TOC', function () {
-    var toc = tocular(simple).toc;
+    var toc = tocular.open(simple);
     expect(!!toc).to.equal(true);
-    console.log(toc);
 
   });
   it('should find complex headers', function () {
-    var headers = tocular(complex).headers;
+    var headers = tocular.open(complex);
     expect(headers.length).to.equal(4);
     expect(headers[0].title).to.equal('Introduction');
     expect(headers[0].anchor).to.equal('#introduction');
@@ -111,7 +113,7 @@ describe('tocular', function () {
   });
 
   it('should find super complex headers', function () {
-    var headers = tocular(supercomplex).headers;
+    var headers = tocular.open(supercomplex);
     var intro = headers[0];
     var subintro = intro.children[0];
     var body = headers[1];
