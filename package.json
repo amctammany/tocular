@@ -1,0 +1,28 @@
+{
+  "name": "tocular",
+  "version": "0.0.0",
+  "description": "Markdown table of contents generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amctammany/tocular"
+  },
+  "keywords": [
+    "markdown",
+    "node",
+    "js"
+  ],
+  "author": "Alex McTammany",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amctammany/tocular/issues"
+  },
+  "homepage": "https://github.com/amctammany/tocular",
+  "devDependencies": {
+    "mocha": "^2.0.1",
+    "chai": "^1.9.2"
+  }
+}
